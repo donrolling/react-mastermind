@@ -35,7 +35,7 @@ export class GamePlay {
         this._gameMode = parseInt(gameMode);
 
         if (this._gameMode === 1) {
-            this._game = GameFactory.GameFactory.CreateWithCode();
+            this._game = GameFactory.GameFactory.CreateCode();
         }
         else {
             //todo: let user set code

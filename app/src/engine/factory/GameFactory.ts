@@ -3,7 +3,7 @@ import { CodeMaker } from "../service/CodeMaker";
 import { Code } from "../model/Code";
 
 export class GameFactory {
-    public static CreateWithCode(): GameState {
+    public static CreateCode(): GameState {
         var x = new GameState();
         x.Code = CodeMaker.Create();
         return x;

@@ -98,7 +98,7 @@ export class MastermindUIUtility {
             var marble = coloredMarbles[i] as HTMLElement;
             console.log(marble.className);
             let cs = marble.className.split(' ');
-            let color = CodeColors[cs[3]];
+            let color = CodeColors[cs[3] as keyof typeof CodeColors];
             colors.push(color);
         }
 

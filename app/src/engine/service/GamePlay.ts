@@ -15,6 +15,9 @@ export class GamePlay {
 
     constructor() {
         let startButton = document.getElementById(MastermindUIElements.StartButton);
+        if(!startButton){
+            throw 'Start Button not found.';
+        }
         startButton.addEventListener(MastermindUIElements.Click, () => this.Init());
     }
 
@@ -28,7 +31,7 @@ export class GamePlay {
     }
 
     private setupGame() {
-        let gameMode = FormUtility.GetRadioVal(MastermindUIElements.GameOptionsForm, MastermindUIElements.GameTypeRadioButtons);
+        let gameMode = FormUtility.GetInputValue(MastermindUIElements.GameOptionsForm, MastermindUIElements.GameTypeRadioButtons, 'radio');
         this._gameMode = parseInt(gameMode);
 
         if (this._gameMode === 1) {

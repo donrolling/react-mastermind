@@ -1,4 +1,5 @@
 export enum CodeColors {
+    empty,
     yellow,
     purple,
     orange,

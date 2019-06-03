@@ -1,0 +1,11 @@
+.mastermind-board {
+    border-radius: 10px;
+    width: 300px;
+    margin: auto;
+    padding: 5px 2px;
+    background: #D0C3B0;
+    border: 1px solid #4C3434;
+    box-shadow: 2px 2px 5px 1px rgba(173, 173, 173, 0.37);
+    text-align: center;
+    position: relative;
+}

@@ -1,0 +1,14 @@
+.gameControls{
+    margin: 0 0 20px 0;
+}
+.rowGoButton{
+    display: block;
+    float: left;
+}
+.start-button {
+    line-height: 30px;
+}
+.start-button a {
+    font-size: 20px;
+}
+    

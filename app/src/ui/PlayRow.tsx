@@ -1,7 +1,8 @@
 import React from 'react';
-import './GameControls.css';
+import './Row.css';
 import Marble from './Marble';
 import RowControls from './RowControls';
+import { CodeColors } from '../engine/enum/CodeColors';
 
 class PlayRow extends React.Component {
     handleSubmit(){}
@@ -9,7 +10,6 @@ class PlayRow extends React.Component {
     handleChange(){}
 
     handleClick(){
-        //draw shit
     }
 
     render(){
@@ -18,10 +18,10 @@ class PlayRow extends React.Component {
                 <RowControls />
                 
                 <div className="mastermind-row-marbles">
-                    <Marble />
-                    <Marble />
-                    <Marble />
-                    <Marble />                    
+                    <Marble CodeColor={ CodeColors.empty } />
+                    <Marble CodeColor={ CodeColors.empty } />
+                    <Marble CodeColor={ CodeColors.empty } />
+                    <Marble CodeColor={ CodeColors.empty } />
                     <div className="clear-left"></div>
                 </div>
             </div>

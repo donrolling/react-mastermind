@@ -1,0 +1,28 @@
+.mastermind-selection-row {
+    text-align: center;
+    position: absolute;
+    z-index: 9999;
+    left: 55px;
+    background: #907e7e;
+    border: 1px solid black;
+}
+.mastermind-row-container {
+    margin: auto;
+    width: 75%;
+    /* padding: 5px 0; */
+}
+.mastermind-row {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+.mastermind-row-marbles{
+    margin: auto;
+    width: 85%;
+}
+.mastermind-row.current {
+    background: #e1d9cd;
+}
+.clear-left {
+  clear: left;
+}

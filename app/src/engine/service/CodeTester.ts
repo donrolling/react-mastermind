@@ -8,10 +8,10 @@ import * as _ from 'lodash';
 
 export class CodeTester {
     public static AreEqual(guess: Code, answer : Code) : boolean {
-        return guess.One == answer.One
-            && guess.Two == answer.Two
-            && guess.Three == answer.Three
-            && guess.Four == answer.Four;
+        return guess.One === answer.One
+            && guess.Two === answer.Two
+            && guess.Three === answer.Three
+            && guess.Four === answer.Four;
     }
 
     public static Test(guess:Code, answer:Code) : CodeResponse {
@@ -23,7 +23,7 @@ export class CodeTester {
     public static GenerateListOfResponseColors(guess:Code, answer:Code) : ResponseColors[] {
         let list: ResponseColors[] = [];
         let answerColors = CodeFactory.ToColorList(answer);
-        let guessColors = CodeFactory.ToColorList(guess);
+        //let guessColors = CodeFactory.ToColorList(guess);
 
         CodeTester.GetResponse(guess.One, answer.One, list, answerColors);
         CodeTester.GetResponse(guess.Two, answer.Two, list, answerColors);
@@ -37,7 +37,7 @@ export class CodeTester {
     }
 
     public static GetResponse(guessColor: CodeColors, answerColor: CodeColors, list: ResponseColors[], answerColors: CodeColors[]) {
-        if (guessColor == answerColor) {
+        if (guessColor === answerColor) {
             list.push(ResponseColors.Red);
         } else {
             //is maybe white?

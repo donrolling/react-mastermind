@@ -7,31 +7,39 @@ import { GameFactory } from '../engine/factory/GameFactory';
 import { GameState } from '../engine/model/GameState';
 
 export class Board extends React.Component {
-  private _rows: number[] = [];
   private _gameState: GameState;
 
-  constructor(){
-    super(null);
+  constructor(props:any){
+    super(props);
+    this.setGameState = this.setGameState.bind(this);
+  }
+
+  setGameState(){
     this._gameState = GameFactory.CreateCode();
-    for(let i = 0;i < this._gameState.Turns.length;i++){
-      this._rows.push(i);
-    }
+    console.log(this._gameState);
+    this.forceUpdate();
   }
 
   render(){
     return (
       <div className="mastermind">
         <div className="mastermind-board">
-          <GameControls />
+          <GameControls>{this.setGameState}</GameControls>
           
           <div className="mastermind-row-container">
-            <AnswerRow />
+            { this._gameState ? <AnswerRow One={this._gameState.Code.One} Two={this._gameState.Code.Two} Three={this._gameState.Code.Three} Four={this._gameState.Code.Four} /> : null }
 
-            {this._rows.map(x => (
-              <PlayRow />
-            ))}
+            <div className="clear-left"></div>
+
+            { 
+              this._gameState 
+                ? <PlayRow /> 
+                : null 
+            }
+            
             <div className="clear-left"></div>
           </div>
+          <div className="clear-left"></div>
         </div>
       </div>
     );

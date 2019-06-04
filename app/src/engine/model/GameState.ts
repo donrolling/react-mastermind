@@ -2,7 +2,6 @@ import { Code } from "./Code";
 import { CodeResponse } from "./CodeResponse";
 import { Turn } from "./Turn";
 
-import { CodeMaker } from "../service/CodeMaker";
 import { CodeTester } from "../service/CodeTester";
 
 import { CodeFactory } from "../factory/CodeFactory";
@@ -15,11 +14,7 @@ export class GameState {
     public GameOver: boolean = false;
     
     public NumberOfTurns: number = 12;//can be 12, 10 or 8
-    private _code: Code | undefined;
-
-    set Code(code : Code){
-        this._code = code;
-    }
+    public Code: Code;
     
     public GameOverMessage(): string {
         return this.getGameOverMessage();
@@ -29,10 +24,10 @@ export class GameState {
         if (this.Turns.length >= this.NumberOfTurns) {
             throw this.getGameOverMessage();
         }
-        if(!this._code){
-            throw 'Code is undefined.';
+        if(!this.Code){
+            throw new Error('Code is undefined.');
         }
-        let response = CodeTester.Test(guess, this._code);
+        let response = CodeTester.Test(guess, this.Code);
         this.Turns.push({ 'Code': guess, 'CodeResponse': response });
         if (CodeResponseFactory.CorrectGuess(response)) {
             this.CodeBroken = true;
@@ -47,9 +42,9 @@ export class GameState {
     }
 
     private getGameOverMessage(): string {
-        if(!this._code){
-            throw 'Code is undefined.';
+        if(!this.Code){
+            throw new Error('Code is undefined.');
         }
-        return `Game over. \r\nCodeBroken: ${ this.CodeBroken }\r\nCode: ${ CodeFactory.ToString(this._code) }`;
+        return `Game over. \r\nCodeBroken: ${ this.CodeBroken }\r\nCode: ${ CodeFactory.ToString(this.Code) }`;
     }
 }

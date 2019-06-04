@@ -1,15 +1,15 @@
 import React from 'react';
-import './GameControls.css';
+import './Marble.css';
 import { CodeColors } from '../engine/enum/CodeColors';
 
-class Marble extends React.Component {
-    public CodeColors: CodeColors;
-    public Color: string;
+type MarbleProps = { CodeColor:CodeColors };
 
-    constructor(CodeColor: CodeColors){
-        super(null);
-        this.CodeColors = CodeColor;
-        this.Color = CodeColor.toString().toLowerCase();
+class Marble extends React.Component<MarbleProps> {
+    _color: string;
+
+    constructor(props: MarbleProps) {
+        super(props);
+        this._color = CodeColors[this.props.CodeColor];
     }
 
     handleClick(){
@@ -19,7 +19,7 @@ class Marble extends React.Component {
         return (
             <div className="marble-crater marble-top">
                 <div className="marble-crater marble-bottom">
-                    <div className={ `marble ${ this.Color }` } onClick={ this.handleClick }></div>
+                    <div className={ `marble ${ this._color }` } onClick={ this.handleClick }></div>
                 </div>
             </div>
         )

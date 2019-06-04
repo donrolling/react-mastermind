@@ -1,13 +1,21 @@
 import React from 'react';
 import './GameControls.css';
 
-export class GameControls extends React.Component {    
+export class GameControls extends React.Component {
+    private _method: () => void;    
+    
+    constructor(props: any){
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
     handleSubmit(){}
     
     handleChange(){}
 
     handleClick(){
-        //draw shit
+        var s: any = this.props.children;
+        s();
     }
 
     render(){

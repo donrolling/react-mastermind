@@ -1,5 +1,3 @@
-import { Code } from "../model/Code";
-import { CodeColors } from "../enum/CodeColors";
 import { ResponseColors } from "../enum/ResponseColors";
 import { CodeResponse } from "../model/CodeResponse";
 

@@ -9,10 +9,10 @@ class AnswerRow extends React.Component<Code> {
         return (
             <div className="mastermind-row">
                 <div className="mastermind-row-marbles">
-                    <Marble CodeColor={ this.props.One } ClickCallback={ null } />
-                    <Marble CodeColor={ this.props.Two } ClickCallback={ null } />
-                    <Marble CodeColor={ this.props.Three } ClickCallback={ null } />
-                    <Marble CodeColor={ this.props.Four } ClickCallback={ null } />
+                    <Marble CodeColor={ this.props.One } ClickCallback={ null } Index={0} />
+                    <Marble CodeColor={ this.props.Two } ClickCallback={ null } Index={1} />
+                    <Marble CodeColor={ this.props.Three } ClickCallback={ null } Index={2} />
+                    <Marble CodeColor={ this.props.Four } ClickCallback={ null } Index={3} />
                     <div className="clear-left"></div>
                 </div>
             </div>

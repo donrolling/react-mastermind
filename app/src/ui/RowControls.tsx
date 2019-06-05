@@ -5,7 +5,6 @@ import { ResponseColors } from '../engine/enum/ResponseColors';
 
 type RowControlsProps = {
     SubmitRow: () => void;
-    Responses: ResponseColors[] | undefined;
 }
 type RowControlsState = {
     Responses: ResponseColors[];
@@ -16,32 +15,26 @@ class RowControls extends React.Component<RowControlsProps, RowControlsState> {
     constructor(props: RowControlsProps) {
         super(props);
         this.submitRow = this.submitRow.bind(this);
-        if(props.Responses){
-            this.state = {
-                Responses: props.Responses,
-                ResponseClasses: [ResponseColors[props.Responses[0]], ResponseColors[props.Responses[1]], ResponseColors[props.Responses[2]], ResponseColors[props.Responses[3]]]
-            };    
-        } else {
-            this.state = {
-                Responses: [ResponseColors.none, ResponseColors.none, ResponseColors.none, ResponseColors.none],
-                ResponseClasses: [ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none]]
-            };    
-        }
+        this.state = {
+            Responses: [ResponseColors.none, ResponseColors.none, ResponseColors.none, ResponseColors.none],
+            ResponseClasses: [ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none]]
+        };
+
     }
 
     public SetResponse(x: CodeResponse): void {
         this.setState(
             {
                 Responses: [
-                    x.One, 
-                    x.Two, 
-                    x.Three, 
+                    x.One,
+                    x.Two,
+                    x.Three,
                     x.Four
                 ],
                 ResponseClasses: [
-                    ResponseColors[x.One], 
-                    ResponseColors[x.Two], 
-                    ResponseColors[x.Three], 
+                    ResponseColors[x.One],
+                    ResponseColors[x.Two],
+                    ResponseColors[x.Three],
                     ResponseColors[x.Four]
                 ]
             }

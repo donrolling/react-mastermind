@@ -21,7 +21,7 @@ export class CodeMaker {
     public static GetRandomColor() : CodeColors {
         let rand = CodeMaker.RandomIntFromInterval(1, CodeMaker.Max);
         let x = this.getValues(CodeColors)[rand];
-        if(x === CodeColors.empty){
+        if(!x || x === CodeColors.empty){
             return CodeMaker.GetRandomColor();
         }
         return x;

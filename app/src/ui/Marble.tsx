@@ -4,11 +4,13 @@ import { CodeColors } from '../engine/enum/CodeColors';
 
 type MarbleProps = { 
     CodeColor: CodeColors,
-    ClickCallback: (x: Marble) => void;
+    ClickCallback: (x: Marble) => void,
+    Index: number
 };
 type MarbleState = { 
     CodeColor: CodeColors,
-    ColorClass: string
+    ColorClass: string,
+    Index: number
 };
 
 class Marble extends React.Component<MarbleProps, MarbleState> {
@@ -16,19 +18,25 @@ class Marble extends React.Component<MarbleProps, MarbleState> {
         return this.state.CodeColor;
     }
 
+    get Index(): number {
+        return this.state.Index;
+    }
+
     constructor(props: MarbleProps) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
         this.state = {
             CodeColor: props.CodeColor,
-            ColorClass: CodeColors[props.CodeColor]
+            ColorClass: CodeColors[props.CodeColor],
+            Index: props.Index
         };
     }
 
     public SetColor(codeColor: CodeColors){
         this.setState({
             CodeColor: codeColor,
-            ColorClass: CodeColors[codeColor]
+            ColorClass: CodeColors[codeColor],
+            Index: this.state.Index
         });
     }
 

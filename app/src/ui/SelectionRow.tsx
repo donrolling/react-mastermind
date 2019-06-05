@@ -39,12 +39,12 @@ class SelectionRow extends React.Component<SelectionRowProps, SelectionRowState>
     render(){
         return (
             <div className={ `mastermind-selection-row ${ this.state.ShowHideClass }` }>
-                <Marble CodeColor={ CodeColors.yellow } ClickCallback={ this.setSelectedColor } />
-                <Marble CodeColor={ CodeColors.purple } ClickCallback={ this.setSelectedColor } />
-                <Marble CodeColor={ CodeColors.orange } ClickCallback={ this.setSelectedColor } />
-                <Marble CodeColor={ CodeColors.red } ClickCallback={ this.setSelectedColor } />
-                <Marble CodeColor={ CodeColors.green } ClickCallback={ this.setSelectedColor } />
-                <Marble CodeColor={ CodeColors.white } ClickCallback={ this.setSelectedColor } />
+                <Marble CodeColor={ CodeColors.yellow } ClickCallback={ this.setSelectedColor } Index={0} />
+                <Marble CodeColor={ CodeColors.purple } ClickCallback={ this.setSelectedColor } Index={1} />
+                <Marble CodeColor={ CodeColors.orange } ClickCallback={ this.setSelectedColor } Index={2} />
+                <Marble CodeColor={ CodeColors.red } ClickCallback={ this.setSelectedColor } Index={3} />
+                <Marble CodeColor={ CodeColors.green } ClickCallback={ this.setSelectedColor } Index={4} />
+                <Marble CodeColor={ CodeColors.white } ClickCallback={ this.setSelectedColor } Index={5} />
             </div>
         )
     }

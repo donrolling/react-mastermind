@@ -5,6 +5,7 @@ import RowControls from './RowControls';
 import { CodeColors } from '../engine/enum/CodeColors';
 import { Code } from '../engine/model/Code';
 import { CodeFactory } from '../engine/factory/CodeFactory';
+import { ResponseColors } from '../engine/enum/ResponseColors';
 
 type PlayRowProps = { 
     SubmitRow: (x: Code) => void;
@@ -62,7 +63,7 @@ class PlayRow extends React.Component<PlayRowProps> {
     render(){
         return (
             <div className="mastermind-row">
-                <RowControls SubmitRow={ this.submitRow } />
+                <RowControls SubmitRow={ this.submitRow } Responses={undefined} />
                 
                 <div className="mastermind-row-marbles">
                     <Marble CodeColor={ CodeColors.empty } ClickCallback={ this.setMarble } />

@@ -1,4 +1,5 @@
 import React from 'react';
+import Loadable from 'react-loadable';
 import './Board.css';
 import GameControls from './GameControls';
 import AnswerRow from './AnswerRow';
@@ -14,6 +15,8 @@ type BoardState = {
   GameState: GameState | undefined;
   SelectionRow: SelectionRow | undefined;
   ActiveMarble: Marble | undefined;
+  ActivePlayRow: PlayRow | undefined;
+  PlayRows: PlayRow[] | undefined;
 }
 
 export class Board extends React.Component<any, BoardState> {
@@ -23,7 +26,9 @@ export class Board extends React.Component<any, BoardState> {
     this.state = {
       GameState: undefined,
       SelectionRow: undefined,
-      ActiveMarble: undefined
+      ActiveMarble: undefined,
+      ActivePlayRow: undefined,
+      PlayRows: undefined
     };
     this.startGame = this.startGame.bind(this);
     this.selectActiveMarbleColor = this.selectActiveMarbleColor.bind(this);
@@ -40,12 +45,13 @@ export class Board extends React.Component<any, BoardState> {
     });
   }
 
-  selectActiveMarbleColor(x: Marble) {
+  selectActiveMarbleColor(x: Marble, y: PlayRow) {
     if (this.state.SelectionRow) {
       this.setState({
         GameState: this.state.GameState,
         SelectionRow: this.state.SelectionRow,
-        ActiveMarble: x
+        ActiveMarble: x,
+        ActivePlayRow: y
       });
       this.state.SelectionRow.SelectColor();
     } else {
@@ -66,13 +72,17 @@ export class Board extends React.Component<any, BoardState> {
     this.setState({
       GameState: this.state.GameState,
       SelectionRow: x,
-      ActiveMarble: this.state.ActiveMarble
+      ActiveMarble: this.state.ActiveMarble,
+      ActivePlayRow: this.state.ActivePlayRow
     });
   }
 
   submitActiveRow(x: Code) {
-    //let codeResponse = this.state.GameState.Guess(x);
-    //todo: find the active row and set the response
+    let codeResponse = this.state.GameState.Guess(x);
+    let MyComponent = Loadable({
+      loader: () => import('./MyComponent'),
+      loading: () => <div>Loading...</div>
+    });
   }
 
   render() {
@@ -100,7 +110,8 @@ export class Board extends React.Component<any, BoardState> {
             {
               this.state.GameState
                 ? <PlayRow 
-                    SubmitRow={this.submitActiveRow} SetMarble={this.selectActiveMarbleColor} 
+                    SubmitRow={this.submitActiveRow} 
+                    SetMarble={this.selectActiveMarbleColor}
                   />
                 : null
             }
@@ -111,7 +122,7 @@ export class Board extends React.Component<any, BoardState> {
         </div>
       </div>
     );
-  }  
+  }
 }
 
 export default Board;

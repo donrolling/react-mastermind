@@ -1,8 +1,8 @@
 import { ResponseColors } from "../enum/ResponseColors";
 
 export class CodeResponse {
-    public One : ResponseColors = ResponseColors.None;
-    public Two : ResponseColors = ResponseColors.None;
-    public Three : ResponseColors = ResponseColors.None;
-    public Four : ResponseColors = ResponseColors.None;
+    public One : ResponseColors = ResponseColors.none;
+    public Two : ResponseColors = ResponseColors.none;
+    public Three : ResponseColors = ResponseColors.none;
+    public Four : ResponseColors = ResponseColors.none;
 }

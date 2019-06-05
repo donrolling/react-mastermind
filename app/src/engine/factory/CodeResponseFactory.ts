@@ -25,7 +25,7 @@ export class CodeResponseFactory {
         var xs = _.filter(
             colorList, 
             (a:ResponseColors) => { 
-                return a === ResponseColors.Red;
+                return a === ResponseColors.red;
             }
         );
         return xs.length === 4;

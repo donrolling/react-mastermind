@@ -1,5 +1,5 @@
 export enum ResponseColors {
-    Red,
-    White,
-    None
+    red,
+    white,
+    none
 }

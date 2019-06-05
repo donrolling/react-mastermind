@@ -31,23 +31,23 @@ export class CodeTester {
         CodeTester.GetResponse(guess.Four, answer.Four, list, answerColors);
 
         while (list.length < 4) {
-            list.push(ResponseColors.None);
+            list.push(ResponseColors.none);
         }
         return list;
     }
 
     public static GetResponse(guessColor: CodeColors, answerColor: CodeColors, list: ResponseColors[], answerColors: CodeColors[]) {
         if (guessColor === answerColor) {
-            list.push(ResponseColors.Red);
+            list.push(ResponseColors.red);
         } else {
             //is maybe white?
             //todo: is this where the bug is?
             //probably yes, because it could count a color that is in the answer twice
             let contains = _.includes(answerColors, guessColor);
             if (contains) {
-                list.push(ResponseColors.White);
+                list.push(ResponseColors.white);
             } else {
-                list.push(ResponseColors.None);
+                list.push(ResponseColors.none);
             }
         }
     }

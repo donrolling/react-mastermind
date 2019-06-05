@@ -112,13 +112,13 @@ export class MastermindUIUtility {
             let response = codeResponses[i];
             let responseClass = '';
             switch(response){
-                case ResponseColors.Red:
+                case ResponseColors.red:
                     responseClass = ` ${MastermindUIElements.Red}`;
                     break;
-                case ResponseColors.White:
+                case ResponseColors.white:
                     responseClass = ` ${MastermindUIElements.White}`;
                     break;
-                case ResponseColors.None:
+                case ResponseColors.none:
                 default:
                     break;
             }

@@ -1,33 +1,38 @@
 import React from 'react';
 import './GameControls.css';
 
-export class GameControls extends React.Component {
-    private _method: () => void;    
-    
-    constructor(props: any){
+type GameControlsProps = {
+    StartGame: () => void;
+}
+
+export class GameControls extends React.Component<GameControlsProps> {
+    private _gameType: string = '1';
+
+    constructor(props: GameControlsProps){
         super(props);
-        this.handleClick = this.handleClick.bind(this);
+        this.handleGameTypeChange = this.handleGameTypeChange.bind(this);
+        this.handleStartClick = this.handleStartClick.bind(this);
     }
 
-    handleSubmit(){}
-    
-    handleChange(){}
+    handleGameTypeChange(event: React.ChangeEvent){
+        console.log(event.target.nodeValue);
+        this._gameType = event.target.nodeValue;
+    }
 
-    handleClick(){
-        var s: any = this.props.children;
-        s();
+    handleStartClick(){
+        this.props.StartGame();
     }
 
     render(){
         return (
             <div className="gameControls" >
                 <h3>MASTERMIND</h3>
-                <form id="gameOptions" onSubmit={this.handleSubmit}>
-                    <input type="radio" name="gametype" value="1" checked onChange={this.handleChange} /> VS Computer
-                    <input type="radio" name="gametype" value="2" onChange={this.handleChange} /> VS User
+                <form id="gameOptions">
+                    <input type="radio" name="gameType" value="1" checked onChange={ this.handleGameTypeChange } /> VS Computer
+                    <input type="radio" name="gameType" value="2" onChange={ this.handleGameTypeChange } /> VS User
                 </form>
                 <div className="start-button">
-                    <button type="button" id="startButton" onClick={this.handleClick}>Start</button>
+                    <button type="button" id="startButton" onClick={ this.handleStartClick }>Start</button>
                 </div>
             </div>
         )

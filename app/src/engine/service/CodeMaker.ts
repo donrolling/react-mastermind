@@ -20,7 +20,11 @@ export class CodeMaker {
 
     public static GetRandomColor() : CodeColors {
         let rand = CodeMaker.RandomIntFromInterval(1, CodeMaker.Max);
-        return this.getValues(CodeColors)[rand];
+        let x = this.getValues(CodeColors)[rand];
+        if(x === CodeColors.empty){
+            return CodeMaker.GetRandomColor();
+        }
+        return x;
     }
 
     private static getValues<T extends number>(e: any) {

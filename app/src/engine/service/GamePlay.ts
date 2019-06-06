@@ -1,6 +1,3 @@
-import { CodeColors } from "../enum/CodeColors";
-import { ResponseColors } from "../enum/ResponseColors";
-import { CodeFactory } from "../factory/CodeFactory";
 import * as GameFactory from "../factory/GameFactory";
 import { Code } from "../model/Code";
 import { GameState } from "../model/GameState";

@@ -1,4 +1,5 @@
 import React from 'react';
+import update from 'immutability-helper';
 import './Row.css';
 import Marble from './Marble';
 import RowControls from './RowControls';
@@ -7,24 +8,27 @@ import { Code } from '../engine/model/Code';
 import { CodeFactory } from '../engine/factory/CodeFactory';
 import { CodeResponse } from '../engine/model/CodeResponse';
 
-type PlayRowProps = { 
+type PlayRowProps = {
     SubmitRow: (x: Code) => void;
     SetMarble: (x: Marble, y: PlayRow) => void;
     Index: number;
 };
 
-type PlayRowState = { 
+type PlayRowState = {
     ActiveMarble: Marble | undefined;
     Marbles: Marble[] | undefined;
     RowControls: RowControls | undefined;
     Disabled: boolean;
+    Complete: boolean;
+    UpdateMethod: string;
 };
 
 class PlayRow extends React.Component<PlayRowProps, PlayRowState> {
-    private _marbleMapper: number[] = [0,1,2,3];
+    private _marbleMapper: number[] = [0, 1, 2, 3];
     private _marbles: Marble[] = [];
+    _rowControls: RowControls;
 
-    public get Index(){
+    public get Index() {
         return this.props.Index;
     }
 
@@ -36,106 +40,132 @@ class PlayRow extends React.Component<PlayRowProps, PlayRowState> {
             ActiveMarble: undefined,
             Marbles: undefined,
             RowControls: undefined,
-            Disabled: true
+            Disabled: true,
+            Complete: false,
+            UpdateMethod: 'ctor'
         };
     }
 
-    public SetActiveMarbleColor(codeColors: CodeColors){
-        if(this.state.ActiveMarble){
+    public Enable(): void {
+        console.log('Enable');
+        if (this.state.RowControls) {
+            console.log('Enable RowControls');
+            this.state.RowControls.Enable();
+        }
+        this.setState(update(this.state, {
+            Disabled: { $set: false }
+        }));
+    }
+
+    public Disable(): void {
+        if (this.state.RowControls) {
+            this.state.RowControls.Disable();
+        }
+        this.setState(update(this.state, {
+            Disabled: { $set: true }
+        }));
+    }
+
+    public SetActiveMarbleColor(codeColors: CodeColors) {
+        if (this.state.ActiveMarble) {
             this.state.ActiveMarble.SetColor(codeColors);
-        }else{
+        } else {
             throw new Error('Active Marble wasn\'t set');
         }
     }
 
-    public Enable(): void {
-        this.setState({
-            ActiveMarble: this.state.ActiveMarble,
-            RowControls: this.state.RowControls,
-            Disabled: false
-        });
-    }
-
-    public Disable(): void {
-        this.setState({
-            ActiveMarble: this.state.ActiveMarble,
-            RowControls: this.state.RowControls,
-            Disabled: true
-        });
-    }
-
-    public SetResponse(response: CodeResponse){
+    public SetResponse(response: CodeResponse) {
+        if (!this.state.RowControls) { return; }
         this.state.RowControls.SetResponse(response);
+        this.setState(update(this.state, {
+            Complete: { $set: true }
+        }));
     }
 
-    addMarble(marble: Marble) {
-        if(this.state.Marbles){ return; }
-        
-        if(marble.Index < this._marbleMapper.length){
-          this._marbles.push(marble);
+    private addMarble(marble: Marble) {
+        if (this.state.Marbles) {
+            return;
         }
-        if(marble.Index === this._marbleMapper.length - 1){
-          this.setState({            
-            ActiveMarble: this.state.ActiveMarble,
-            Marbles: this._marbles,
-            RowControls: this.state.RowControls,
-            Disabled: this.state.Disabled
-          });
-        } 
+        if (!marble) {
+            return;
+        }
+        if (marble.Index < this._marbleMapper.length) {
+            this._marbles.push(marble);
+        }
     }
 
-    submitRow(): void {
-        let xs: Marble[] = this.state.Marbles;
+    private addRowControls(rowControls: RowControls) {
+        if (this.state.RowControls) {
+            return;
+        }
+        if (!rowControls) {
+            return;
+        }
+        this._rowControls = rowControls;
+    }
+
+    private setMarble(marble: Marble): void {
+        if (this.state.Disabled) {
+            return;
+        }
+        this.setState(update(this.state, {
+            ActiveMarble: { $set: marble }
+        }));
+        this.props.SetMarble(marble, this);
+    }
+
+    private submitRow(): void {
+        if (this.state.Disabled) {
+            return;
+        }
+        let marbles: Marble[] = this.state.Marbles;
         let valid = true;
-        for(var i = 0;i < xs.length;i++){
-            valid = xs[i].CodeColor !== CodeColors.empty;
-            if(!valid){
+        for (var i = 0; i < marbles.length; i++) {
+            valid = marbles[i].CodeColor !== CodeColors.empty;
+            if (!valid) {
                 alert('You have to finish this row.');
                 return;
             }
         }
-        var x: Code = CodeFactory.Create(xs[0].CodeColor, xs[1].CodeColor, xs[2].CodeColor, xs[3].CodeColor);
-        this.props.SubmitRow(x);
+        var code: Code = CodeFactory.Create(marbles[0].CodeColor, marbles[1].CodeColor, marbles[2].CodeColor, marbles[3].CodeColor);
+        this.props.SubmitRow(code);
     }
 
-    setMarble(x: Marble): void {
-        if(this.state.Disabled){ return; }
-        this.setState({
-            ActiveMarble: x,
-            RowControls: this.state.RowControls,
-            Disabled: this.state.Disabled
-        });
-        this.props.SetMarble(x, this);
-    }
-    
-    addRowControls(x: RowControls) {
-        if(this.state.RowControls){return;}
-        this.setState({
-            ActiveMarble: this.state.ActiveMarble,
-            RowControls: x,
-            Disabled: this.state.Disabled
-        });
+    componentDidUpdate(prevProps: any, prevState: any, snapshot: any): void {
+        if (
+            this.state.UpdateMethod !== 'componentDidUpdate'
+            && this._rowControls
+            && this._marbles
+            && this._marbles.length > 0
+        ) {
+            this.setState(update(this.state, {
+                RowControls: { $set: this._rowControls },
+                Marbles: { $set: this._marbles },
+                UpdateMethod: { $set: 'componentDidUpdate' }
+            }));
+        }
     }
 
-    render(){
+    render() {
         return (
             <div className="mastermind-row">
-                <RowControls 
-                    SubmitRow={ this.submitRow }                     
+                <RowControls
+                    key={'RowControls'}
+                    SubmitRow={this.submitRow}
                     ref={(x) => { this.addRowControls(x); }}
                 />
-                
+
                 <div className="mastermind-row-marbles">
                     {
                         this._marbleMapper.map((i) => (
-                            <Marble 
-                                CodeColor={ CodeColors.empty } 
-                                ClickCallback={ this.setMarble }
-                                key={ `Marble${i}` }
+                            <Marble
+                                CodeColor={CodeColors.empty}
+                                ClickCallback={this.setMarble}
+                                key={`Marble${i}`}
                                 Index={i}
                                 ref={(x) => { this.addMarble(x); }}
                             />
-                          ))
+                        ))
                     }
                     <div className="clear-left"></div>
                 </div>

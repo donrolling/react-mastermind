@@ -11,6 +11,7 @@ import { CodeResponse } from '../engine/model/CodeResponse';
 type PlayRowProps = {
     SubmitRow: (x: Code) => void;
     SetMarble: (x: Marble, y: PlayRow) => void;
+    NotifyReady: (x: PlayRow) => void;
     Index: number;
 };
 
@@ -19,7 +20,6 @@ type PlayRowState = {
     Marbles: Marble[] | undefined;
     RowControls: RowControls | undefined;
     Disabled: boolean;
-    Complete: boolean;
     UpdateMethod: string;
 };
 
@@ -41,28 +41,14 @@ class PlayRow extends React.Component<PlayRowProps, PlayRowState> {
             Marbles: undefined,
             RowControls: undefined,
             Disabled: true,
-            Complete: false,
             UpdateMethod: 'ctor'
         };
     }
 
     public Enable(): void {
-        console.log('Enable');
-        if (this.state.RowControls) {
-            console.log('Enable RowControls');
-            this.state.RowControls.Enable();
-        }
         this.setState(update(this.state, {
-            Disabled: { $set: false }
-        }));
-    }
-
-    public Disable(): void {
-        if (this.state.RowControls) {
-            this.state.RowControls.Disable();
-        }
-        this.setState(update(this.state, {
-            Disabled: { $set: true }
+            Disabled: { $set: false },
+            UpdateMethod: { $set: 'Enable' }
         }));
     }
 
@@ -76,10 +62,11 @@ class PlayRow extends React.Component<PlayRowProps, PlayRowState> {
 
     public SetResponse(response: CodeResponse) {
         if (!this.state.RowControls) { return; }
-        this.state.RowControls.SetResponse(response);
         this.setState(update(this.state, {
-            Complete: { $set: true }
+            Disabled: { $set: true },
+            UpdateMethod: { $set: 'Disable' }
         }));
+        this.state.RowControls.SetResponse(response);       
     }
 
     private addMarble(marble: Marble) {
@@ -132,17 +119,35 @@ class PlayRow extends React.Component<PlayRowProps, PlayRowState> {
     }
 
     componentDidUpdate(prevProps: any, prevState: any, snapshot: any): void {
+        //don't really set the state until everything is ready
         if (
             this.state.UpdateMethod !== 'componentDidUpdate'
             && this._rowControls
             && this._marbles
             && this._marbles.length > 0
         ) {
-            this.setState(update(this.state, {
-                RowControls: { $set: this._rowControls },
-                Marbles: { $set: this._marbles },
-                UpdateMethod: { $set: 'componentDidUpdate' }
-            }));
+            if (this.state.RowControls
+                && (
+                    this.state.UpdateMethod === 'Enable'
+                    || this.state.UpdateMethod === 'Disable'
+                )
+            ) {
+                if(this.state.UpdateMethod === 'Enable'){
+                    this.state.RowControls.Enable();
+                }
+                if(this.state.UpdateMethod === 'Disable'){
+                    //this.state.RowControls.Disable();
+                }
+            } else {
+                this.setState(update(this.state, {
+                    RowControls: { $set: this._rowControls },
+                    Marbles: { $set: this._marbles },
+                    UpdateMethod: { $set: 'componentDidUpdate' }
+                }));
+            }
+        } else {
+            //send notification that we're setup and ready
+            this.props.NotifyReady(this);
         }
     }
 

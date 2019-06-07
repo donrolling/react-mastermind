@@ -1,5 +1,4 @@
 import React from 'react';
-//import update from 'immutability-helper';
 import './Board.css';
 import GameControls from './GameControls';
 import AnswerRow from './AnswerRow';
@@ -26,8 +25,9 @@ type BoardState = {
 
 export class Board extends React.Component<any, BoardState> {
   private _playRows: PlayRow[] = [];
-  _selectionRow: SelectionRow;
-  _answerRow: AnswerRow;
+  private _selectionRow: SelectionRow;
+  private _answerRow: AnswerRow;
+  private _firstRowEnabled: boolean = false;
 
   constructor(props: any) {
     super(props);
@@ -48,14 +48,16 @@ export class Board extends React.Component<any, BoardState> {
     this.setActiveMarbleColor = this.setActiveMarbleColor.bind(this);
     this.setSelectionRow = this.setSelectionRow.bind(this);
     this.submitActiveRow = this.submitActiveRow.bind(this);
+    this.playRowReady = this.playRowReady.bind(this);
+    this.enableFirstPlayRow = this.enableFirstPlayRow.bind(this);
   }
 
-  addPlayRow(playRow: PlayRow) {
+  private addPlayRow(playRow: PlayRow) {
     if (this.state.PlayRows || !playRow) { return; }
     this._playRows.push(playRow);
   }
 
-  selectActiveMarbleColor(marble: Marble, playRow: PlayRow) {
+  private selectActiveMarbleColor(marble: Marble, playRow: PlayRow) {
     if (this.state.SelectionRow) {
       this.setState({
         GameState: this.state.GameState,
@@ -72,7 +74,7 @@ export class Board extends React.Component<any, BoardState> {
     }
   }
 
-  setActiveMarbleColor(codeColor: CodeColors) {
+  private setActiveMarbleColor(codeColor: CodeColors) {
     if (this.state.ActiveMarble || !codeColor) {
       this.state.ActiveMarble.SetColor(codeColor);
     } else {
@@ -80,17 +82,17 @@ export class Board extends React.Component<any, BoardState> {
     }
   }
 
-  setSelectionRow(selectionRow: SelectionRow) {
+  private setSelectionRow(selectionRow: SelectionRow) {
     if (this.state.SelectionRow || !selectionRow) { return; }
     this._selectionRow = selectionRow;
   }
 
-  setAnswerRow(answerRow: AnswerRow) {
+  private setAnswerRow(answerRow: AnswerRow) {
     if (this.state.AnswerRow) { return; }
     this._answerRow = answerRow;
   }
 
-  startGame() {
+  private startGame() {
     let gameState = GameFactory.CreateCode();
     let turns: number[] = [];
     for (var i = 0; i < gameState.NumberOfTurns; i++) {
@@ -108,17 +110,17 @@ export class Board extends React.Component<any, BoardState> {
     });
   }
 
-  submitActiveRow(code: Code) {
+  private submitActiveRow(code: Code) {
     let codeResponse = this.state.GameState.Guess(code);
     this.state.ActivePlayRow.SetResponse(codeResponse);
-    this.state.ActivePlayRow.Disable();
     let index = this.state.GameState.Turns.length;
     let activePlayRow: PlayRow = undefined;
     let showAnswer = this.state.ShowAnswer;
     if (this.state.GameState.GameOver) {
+      showAnswer = true;
+    } else {
       activePlayRow = this._playRows[index];
       activePlayRow.Enable();
-      showAnswer = true;
     }
     this.setState({
       GameState: this.state.GameState,
@@ -132,11 +134,27 @@ export class Board extends React.Component<any, BoardState> {
     });
   }
 
-  componentDidUpdate(prevProps: any, prevState: any, snapshot: any): void {    
-    if(!this.state.GameState){
+  private playRowReady(playRow: PlayRow): void {
+    if (this._firstRowEnabled) { return; }
+    if (playRow.Index === this.state.GameState.NumberOfTurns - 1) {
+      this.enableFirstPlayRow();
+    }
+  }
+
+  private enableFirstPlayRow(): void {
+    this._firstRowEnabled = true;
+    if (this._playRows && this._playRows.length > 0) {
+      let index = this.state.GameState.Turns.length;
+      let activePlayRow = this._playRows[index];
+      activePlayRow.Enable();
+    }
+  }
+
+  componentDidUpdate(prevProps: any, prevState: any, snapshot: any): void {
+    if (!this.state.GameState) {
       return;
     }
-    if(this.state.UpdateMethod !== 'componentDidUpdate'){
+    if (this.state.UpdateMethod !== 'componentDidUpdate') {
       this.setState({
         GameState: this.state.GameState,
         SelectionRow: this._selectionRow,
@@ -145,17 +163,7 @@ export class Board extends React.Component<any, BoardState> {
         ActivePlayRow: this.state.ActivePlayRow,
         PlayRows: this._playRows,
         UpdateMethod: 'componentDidUpdate'
-      });  
-
-      console.log(this._playRows);
-      console.log(this.state.GameState.Turns);
-
-      if(this._playRows && this._playRows.length > 0){
-        let index = this.state.GameState.Turns.length;
-        let activePlayRow = this._playRows[index];
-        console.log(activePlayRow);
-        activePlayRow.Enable();
-      }
+      });
     }
   }
 
@@ -197,6 +205,7 @@ export class Board extends React.Component<any, BoardState> {
                   <PlayRow
                     SubmitRow={this.submitActiveRow}
                     SetMarble={this.selectActiveMarbleColor}
+                    NotifyReady={this.playRowReady}
                     key={`PlayRow${i}`}
                     Index={i}
                     ref={(x) => { this.addPlayRow(x); }}

@@ -3,6 +3,7 @@ import update from 'immutability-helper';
 import './RowControls.css';
 import { CodeResponse } from '../engine/model/CodeResponse';
 import { ResponseColors } from '../engine/enum/ResponseColors';
+import Pegs from './Pegs';
 
 type RowControlsProps = {
     SubmitRow: () => void;
@@ -21,28 +22,36 @@ class RowControls extends React.Component<RowControlsProps, RowControlsState> {
         this.submitRow = this.submitRow.bind(this);
         this.state = {
             Responses: [ResponseColors.none, ResponseColors.none, ResponseColors.none, ResponseColors.none],
-            ResponseClasses: [ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none], ResponseColors[ResponseColors.none]],
+            ResponseClasses: [
+                `peg ${ResponseColors[ResponseColors.none]}`,
+                `peg ${ResponseColors[ResponseColors.none]}`,
+                `peg ${ResponseColors[ResponseColors.none]}`,
+                `peg ${ResponseColors[ResponseColors.none]}`
+            ],
             Complete: false,
             Disabled: true
         };
     }
 
-    public SetResponse(x: CodeResponse): void {
+    public SetResponse(codeResponse: CodeResponse): void {
+        console.log('RowControls SetResponse');
         let responses = [
-            x.One,
-            x.Two,
-            x.Three,
-            x.Four
+            codeResponse.One,
+            codeResponse.Two,
+            codeResponse.Three,
+            codeResponse.Four
         ];
         let responseClasses = [
-            ResponseColors[x.One],
-            ResponseColors[x.Two],
-            ResponseColors[x.Three],
-            ResponseColors[x.Four]
+            `peg ${ResponseColors[codeResponse.One]}`,
+            `peg ${ResponseColors[codeResponse.Two]}`,
+            `peg ${ResponseColors[codeResponse.Three]}`,
+            `peg ${ResponseColors[codeResponse.Four]}`
         ];
         this.setState({
             Responses: responses,
             ResponseClasses: responseClasses,
+            Disabled: false,
+            Complete: true
         });
     }
 
@@ -52,13 +61,13 @@ class RowControls extends React.Component<RowControlsProps, RowControlsState> {
         }));
     }
 
-    public Disable(): void {
+    public Complete(): void {
         this.setState(update(this.state, {
-            Disabled: { $set: true }
+            Complete: { $set: true }
         }));
     }
 
-    submitRow(): void {
+    private submitRow(): void {
         this.props.SubmitRow();
     }
 
@@ -66,19 +75,14 @@ class RowControls extends React.Component<RowControlsProps, RowControlsState> {
         return (
             <div className="mastermind-row-controls">
                 {
-                    this.state.Disabled || !this.state.Complete
+                    this.state.Disabled || this.state.Complete
                         ? null
                         : <button className='rowGoButton' onClick={this.submitRow}>Go</button>
                 }
                 {
-                    this.state.Disabled
+                    !this.state.Complete
                         ? null
-                        : <div className="pegs">
-                            <div className={`peg ${this.state.ResponseClasses[0]}`}></div>
-                            <div className={`peg ${this.state.ResponseClasses[1]}`}></div>
-                            <div className={`peg ${this.state.ResponseClasses[2]}`}></div>
-                            <div className={`peg ${this.state.ResponseClasses[3]}`}></div>
-                        </div>
+                        : <Pegs ResponseClasses={this.state.ResponseClasses} />
                 }
 
                 <div className="clear-left"></div>
